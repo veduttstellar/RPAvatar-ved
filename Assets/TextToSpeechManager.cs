@@ -17,7 +17,7 @@ public class TextToSpeechManager : MonoBehaviour
     public AudioSource audioSource;
 
     // Test greeting
-    public string testText = "こんにちは、hello、テストです";
+    public string testText = "こんにちは、テストです";
 
     // speakButton01 string
     public string talk01 = "何かお手伝いできることはございますか？";
@@ -36,7 +36,7 @@ public class TextToSpeechManager : MonoBehaviour
         await SpeakTextAsync(testText);
 
         sendButton.onClick.AddListener(async () => await MakeRequestAsync());
-        speakButton01.onClick.AddListener(async () => await SpeakspeakButton01());
+        //speakButton01.onClick.AddListener(async () => await SpeakCommonPhrase());
     }
 
     private async Task MakeRequestAsync()
@@ -45,7 +45,7 @@ public class TextToSpeechManager : MonoBehaviour
     }
 
     // Method to handle speaking the phrase for speakButton01
-    private async Task SpeakspeakButton01()
+    private async Task SpeakCommonPhrase()
     {
         Debug.Log("speakButton01 was clicked."); // Debug to check if the button is working
         await SpeakTextAsync(talk01);

@@ -1958,7 +1958,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0000021281369}
+  m_AnchoredPosition: {x: 0, y: 0.0008886011}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1008601736
@@ -2933,7 +2933,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 1902375323}
-  testText: "\u3053\u3093\u306B\u3061\u306F\u3001hello\u3001\u30C6\u30B9\u30C8\u3067\u3059"
+  testText: "\u3053\u3093\u306B\u3061\u306F\u3001\u30C6\u30B9\u30C8\u3067\u3059"
   talk01: "\u4F55\u304B\u304A\u624B\u4F1D\u3044\u3067\u304D\u308B\u3053\u3068\u306F\u3054\u3056\u3044\u307E\u3059\u304B\uFF1F"
   sendButton: {fileID: 1926764885}
   speakButton01: {fileID: 0}
