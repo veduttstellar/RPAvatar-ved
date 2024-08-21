@@ -17,9 +17,13 @@ public class TextToSpeechManager : MonoBehaviour
     public AudioSource audioSource;
 
     // Test greeting
-    public string textToSpeak = "Hello, this is a test.";
+    public string testText = "こんにちは、hello、テストです";
 
-    [SerializeField] private Button button;
+    // speakButton01 string
+    public string talk01 = "何かお手伝いできることはございますか？";
+
+    [SerializeField] private Button sendButton;
+    [SerializeField] private Button speakButton01;
     [SerializeField] private InputField inputField;
 
 
@@ -27,14 +31,24 @@ public class TextToSpeechManager : MonoBehaviour
     {
         LoadConfig();
         InitializeSpeechSDK();
-        await SpeakTextAsync(textToSpeak);
 
-        button.onClick.AddListener(async () => await MakeRequestAsync());
+        // Speak test greeting
+        await SpeakTextAsync(testText);
+
+        sendButton.onClick.AddListener(async () => await MakeRequestAsync());
+        speakButton01.onClick.AddListener(async () => await SpeakspeakButton01());
     }
 
     private async Task MakeRequestAsync()
     {
         await SpeakTextAsync(inputField.text);
+    }
+
+    // Method to handle speaking the phrase for speakButton01
+    private async Task SpeakspeakButton01()
+    {
+        Debug.Log("speakButton01 was clicked."); // Debug to check if the button is working
+        await SpeakTextAsync(talk01);
     }
 
     void LoadConfig()
