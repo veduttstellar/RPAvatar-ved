@@ -5,6 +5,8 @@ using UnityEngine;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
 using UnityEngine.UI;
+using TMPro;
+using System.Collections;
 
 public class TextToSpeechManager : MonoBehaviour
 {
@@ -17,14 +19,21 @@ public class TextToSpeechManager : MonoBehaviour
     public AudioSource audioSource;
 
     // Test greeting
-    public string testText = "こんにちは、テストです";
+    public string testText = "テストです";
 
     // speakButton01 string
-    public string talk01 = "何かお手伝いできることはございますか？";
+    public string talk01 = "こんにちは！";
+    public string talk02 = "何かお手伝いできることはございますか？";
+    public string talk03 = "メリークリスマス！";
 
     [SerializeField] private Button sendButton;
     [SerializeField] private Button speakButton01;
+    [SerializeField] private Button speakButton02;
+    [SerializeField] private Button speakButton03;
     [SerializeField] private InputField inputField;
+    [SerializeField] private ScrollRect outputScrollView;
+    [SerializeField] private TextMeshProUGUI outputText;
+    [SerializeField] private RectTransform contentRectTransform;
 
 
     async void Start()
@@ -36,7 +45,9 @@ public class TextToSpeechManager : MonoBehaviour
         await SpeakTextAsync(testText);
 
         sendButton.onClick.AddListener(async () => await MakeRequestAsync());
-        //speakButton01.onClick.AddListener(async () => await SpeakCommonPhrase());
+        speakButton01.onClick.AddListener(() => StartCoroutine(SpeakCommonPhraseCoroutine(talk01)));
+        speakButton02.onClick.AddListener(() => StartCoroutine(SpeakCommonPhraseCoroutine(talk02)));
+        speakButton03.onClick.AddListener(() => StartCoroutine(SpeakCommonPhraseCoroutine(talk03)));
     }
 
     private async Task MakeRequestAsync()
@@ -44,11 +55,11 @@ public class TextToSpeechManager : MonoBehaviour
         await SpeakTextAsync(inputField.text);
     }
 
-    // Method to handle speaking the phrase for speakButton01
-    private async Task SpeakCommonPhrase()
+    // Updated method to handle all three buttons
+    private IEnumerator SpeakCommonPhraseCoroutine(string phrase)
     {
-        Debug.Log("speakButton01 was clicked."); // Debug to check if the button is working
-        await SpeakTextAsync(talk01);
+        Debug.Log($"Button was clicked. Speaking: {phrase}");
+        yield return SpeakTextAsync(phrase);
     }
 
     void LoadConfig()
@@ -75,11 +86,30 @@ public class TextToSpeechManager : MonoBehaviour
         synthesizer = new SpeechSynthesizer(speechConfig, null as AudioConfig);
     }
 
+    private void WriteSpeakTextLog(string text)
+    {
+        // Get the current time and format it
+        string timestamp = DateTime.Now.ToString("yyyy/MM/dd | HH:mm:ss");
+        
+        // Add the timestamp and text to the output TextMeshPro component
+        outputText.text += $"[{timestamp}] Avatar: {text}\n";
+
+        // Force the ContentSizeFitter to recalculate
+        LayoutRebuilder.ForceRebuildLayoutImmediate(contentRectTransform);
+
+        // Scroll to the bottom of the scroll view
+        Canvas.ForceUpdateCanvases();
+        outputScrollView.verticalNormalizedPosition = 0f;
+
+        Debug.Log($"Text added to log: [{timestamp}] {text}"); // Debug log to verify text is being added
+    }
+
     public async Task SpeakTextAsync(string text)
     {
         var result = await synthesizer.SpeakTextAsync(text);
         if (result.Reason == ResultReason.SynthesizingAudioCompleted)
         {
+            WriteSpeakTextLog($"Avatar: {text}");
             Debug.Log($"Speech synthesized for text [{text}]");
             var audioClip = CreateAudioClip(result.AudioData);
             if (audioClip != null)
