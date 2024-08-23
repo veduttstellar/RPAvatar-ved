@@ -86,13 +86,13 @@ public class TextToSpeechManager : MonoBehaviour
         synthesizer = new SpeechSynthesizer(speechConfig, null as AudioConfig);
     }
 
-    private void WriteSpeakTextLog(string text)
+    public void WriteSpeakTextLog(string speaker, string text)
     {
         // Get the current time and format it
         string timestamp = DateTime.Now.ToString("yyyy/MM/dd | HH:mm:ss");
         
         // Add the timestamp and text to the output TextMeshPro component
-        outputText.text += $"[{timestamp}] Avatar: {text}\n";
+        outputText.text += $"[{timestamp}] {speaker}: {text}\n";
 
         // Force the ContentSizeFitter to recalculate
         LayoutRebuilder.ForceRebuildLayoutImmediate(contentRectTransform);
@@ -109,7 +109,7 @@ public class TextToSpeechManager : MonoBehaviour
         var result = await synthesizer.SpeakTextAsync(text);
         if (result.Reason == ResultReason.SynthesizingAudioCompleted)
         {
-            WriteSpeakTextLog($"Avatar: {text}");
+            WriteSpeakTextLog("Avatar", text);
             Debug.Log($"Speech synthesized for text [{text}]");
             var audioClip = CreateAudioClip(result.AudioData);
             if (audioClip != null)

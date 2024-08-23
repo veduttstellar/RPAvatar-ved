@@ -4,15 +4,25 @@ using Microsoft.CognitiveServices.Speech;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using TMPro;
+using System.Collections.Generic;
 
 public class VoiceRecognition : MonoBehaviour
 {
+    public TextToSpeechManager textToSpeechManager;
+
     public Text voiceRecognitionText; // Declare the Text component
 
     private string speechKey;
     private string speechRegion;
     private SpeechRecognizer recognizer;
     private bool isListening = false;
+
+    [SerializeField] private ScrollRect outputScrollView;
+    [SerializeField] private TextMeshProUGUI outputText;
+    [SerializeField] private RectTransform contentRectTransform;
+
+    private Queue<Action> mainThreadActions = new Queue<Action>();
 
     async void Start()
     {
@@ -90,45 +100,35 @@ public class VoiceRecognition : MonoBehaviour
     private void MainThreadDispatcher(string text)
     {
         Debug.Log($"MainThreadDispatcher called with text: {text}");
-        RunOnMainThread(() => UpdateUIText(text));
+        lock (mainThreadActions)
+        {
+            mainThreadActions.Enqueue(() => UpdateUIText(text));
+        }
     }
 
-    private void RunOnMainThread(System.Action action)
+    private void Update()
     {
-        Debug.Log("RunOnMainThread called");
-        StartCoroutine(ExecuteOnMainThread(action));
-    }
-
-    private System.Collections.IEnumerator ExecuteOnMainThread(System.Action action)
-    {
-        Debug.Log("ExecuteOnMainThread coroutine started");
-        yield return null;
-        Debug.Log("Executing action on main thread");
-        action();
+        if (mainThreadActions.Count > 0)
+        {
+            lock (mainThreadActions)
+            {
+                while (mainThreadActions.Count > 0)
+                {
+                    var action = mainThreadActions.Dequeue();
+                    action.Invoke();
+                }
+            }
+        }
     }
 
     private void UpdateUIText(string text)
     {
-        Debug.Log($"UpdateUIText called with: {text}");
+        Debug.Log($"Updating UI with: {text}");
         if (voiceRecognitionText != null)
         {
-            //This part not working yet
             voiceRecognitionText.text = text;
-            Debug.Log($"UI updated with: {text}");
         }
-        else
-        {
-            Debug.LogError("voiceRecognitionText is null. Make sure it's assigned in the Inspector.");
-        }
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("Space key pressed, updating UI directly");
-            UpdateUIText("Test UI Update");
-        }
+        textToSpeechManager.WriteSpeakTextLog("User", text);
     }
 
     async Task StartContinuousRecognition()
