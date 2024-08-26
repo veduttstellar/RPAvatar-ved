@@ -10,9 +10,6 @@ using System.Collections.Generic;
 public class VoiceRecognition : MonoBehaviour
 {
     public TextToSpeechManager textToSpeechManager;
-
-    public Text voiceRecognitionText; // Declare the Text component
-
     private string speechKey;
     private string speechRegion;
     private SpeechRecognizer recognizer;
@@ -23,6 +20,9 @@ public class VoiceRecognition : MonoBehaviour
     [SerializeField] private RectTransform contentRectTransform;
 
     private Queue<Action> mainThreadActions = new Queue<Action>();
+
+    //for OpenAIController script
+    public event Action<string> OnSpeechRecognized;
 
     async void Start()
     {
@@ -124,11 +124,10 @@ public class VoiceRecognition : MonoBehaviour
     private void UpdateUIText(string text)
     {
         Debug.Log($"Updating UI with: {text}");
-        if (voiceRecognitionText != null)
-        {
-            voiceRecognitionText.text = text;
-        }
         textToSpeechManager.WriteSpeakTextLog("User", text);
+
+        //for OpenAIController script
+        OnSpeechRecognized?.Invoke(text);
     }
 
     async Task StartContinuousRecognition()
