@@ -20,7 +20,8 @@ List any prerequisites for using your project:
 - Package: Multiplayer Tools
 - Package: Netcode for GameObjects
 - Package: meshoptimizer decompression for Unity (non-essential)
-- probably more I have missed...
+- Package: NuGet For Unity
+- Package: OpenAI
 
 ### Dependencies
 
