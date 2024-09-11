@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "RPMAvatar.sln"
+    "dotnet.defaultSolution": "RPMAvatar2023 - ved.sln"
 }

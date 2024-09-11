@@ -12,9 +12,7 @@ using System.IO;
 
 public class OpenAIController : MonoBehaviour
 {
-    public ScrollRect outputScrollView;
-    public TextMeshProUGUI outputText;
-    public VoiceRecognition voiceRecognition;
+    public VoiceRecognition voiceRecognition;   // for voice input
     public TextToSpeechManager textToSpeechManager;
 
     private OpenAIAPI api;
@@ -25,6 +23,12 @@ public class OpenAIController : MonoBehaviour
     private float cooldownTime = 5f;
     private float lastRequestTime;
 
+    [SerializeField] private Button sendButton;                     // for chat input
+    [SerializeField] private InputField inputField;                 // for chat input
+    [SerializeField] private ScrollRect outputScrollView;
+    [SerializeField] private TextMeshProUGUI outputText;
+    [SerializeField] private RectTransform contentRectTransform;
+
     void Start()
     {
         LoadConfig();
@@ -34,7 +38,7 @@ public class OpenAIController : MonoBehaviour
         StartConversation();
 
         // Subscribe to the event when voice recognition updates the scroll view
-        voiceRecognition.OnSpeechRecognized += HandleSpeechRecognized;
+        // voiceRecognition.OnSpeechRecognized += HandleSpeechRecognized;
     }
 
     void LoadConfig()
@@ -63,7 +67,7 @@ public class OpenAIController : MonoBehaviour
     private void StartConversation()
     {
         messages = new List<ChatMessage> {
-            new ChatMessage(ChatMessageRole.System, "You are an assistant to help those who approach you with any questions. When spoken to in a different language, reply using the same language as last spoken to.")
+            new ChatMessage(ChatMessageRole.System, "You are an assistant to help with any questions. Your replies are a maximum of 2 long or 3 short sentences. When spoken to in a different language, reply using the same language as last spoken to.")
             //new ChatMessage(ChatMessageRole.System, "If you are asked a question about the event space, refer to {database}")
         };
 
@@ -71,7 +75,7 @@ public class OpenAIController : MonoBehaviour
         UpdateScrollView("Assistant", startString);
     }
 
-    private void HandleSpeechRecognized(string recognizedText)
+/*     private void HandleSpeechRecognized(string recognizedText)
     {
         UpdateScrollView("User", recognizedText);
         if (canMakeRequest)
@@ -83,7 +87,25 @@ public class OpenAIController : MonoBehaviour
             float remainingCooldown = cooldownTime - (Time.time - lastRequestTime);
             UpdateScrollView("System", $"Please wait {remainingCooldown:F1} seconds before making another request.");
         }
-    }
+    } */
+
+/*     private void COPYWriteSpeakTextLog(string speaker, string text)
+    {
+        // Get the current time and format it
+        string timestamp = DateTime.Now.ToString("yyyy/MM/dd | HH:mm:ss");
+        
+        // Add the timestamp and text to the output TextMeshPro component
+        outputText.text += $"[{timestamp}] {speaker}: {text}\n";
+
+        // Force the ContentSizeFitter to recalculate
+        LayoutRebuilder.ForceRebuildLayoutImmediate(contentRectTransform);
+
+        // Scroll to the bottom of the scroll view
+        Canvas.ForceUpdateCanvases();
+        outputScrollView.verticalNormalizedPosition = 0f;
+
+        Debug.Log($"Text added to log: [{timestamp}] {text}"); // Debug log to verify text is being added
+    } */
 
     private IEnumerator GetResponseCoroutine(string userInput)
     {
@@ -124,6 +146,7 @@ public class OpenAIController : MonoBehaviour
 
         // Update the scroll view with the response
         UpdateScrollView("Assistant", responseMessage.Content);
+
 
         // Use text-to-speech to speak the response
         textToSpeechManager.SpeakTextAsync(responseMessage.Content);

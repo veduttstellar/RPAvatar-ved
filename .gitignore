@@ -74,3 +74,7 @@ crashlytics-build.properties
 
 # Ignore all config.json files in any StreamingAssets folder
 **/StreamingAssets/config.json
+
+# Additional automatically changed files from Kevin laptop
+/[Aa]ssets/DefaultVolumeProfile.asset
+/[Aa]ssets/SpeechSDK/Plugins/x86_64/Microsoft.CognitiveServices.Speech.extension.kws.dll.meta

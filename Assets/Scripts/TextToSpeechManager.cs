@@ -10,11 +10,11 @@ using System.Collections;
 
 public class TextToSpeechManager : MonoBehaviour
 {
-    private string speechKey;
-    private string speechRegion;
+    public string azureSpeechKey;
+    public string azureSpeechRegion;
 
-    private SpeechConfig speechConfig;
-    private SpeechSynthesizer synthesizer;
+    public SpeechConfig speechConfig;
+    public SpeechSynthesizer synthesizer;
 
     public AudioSource audioSource;
 
@@ -50,13 +50,13 @@ public class TextToSpeechManager : MonoBehaviour
         speakButton03.onClick.AddListener(() => StartCoroutine(SpeakCommonPhraseCoroutine(talk03)));
     }
 
-    private async Task MakeRequestAsync()
+    public async Task MakeRequestAsync()
     {
         await SpeakTextAsync(inputField.text);
     }
 
     // Updated method to handle all three buttons
-    private IEnumerator SpeakCommonPhraseCoroutine(string phrase)
+    public IEnumerator SpeakCommonPhraseCoroutine(string phrase)
     {
         Debug.Log($"Button was clicked. Speaking: {phrase}");
         yield return SpeakTextAsync(phrase);
@@ -71,8 +71,8 @@ public class TextToSpeechManager : MonoBehaviour
             string dataAsJson = File.ReadAllText(filePath);
             ConfigData configData = JsonUtility.FromJson<ConfigData>(dataAsJson);
 
-            speechKey = configData.speechKey;
-            speechRegion = configData.speechRegion;
+            azureSpeechKey = configData.azureSpeechKey;
+            azureSpeechRegion = configData.azureSpeechRegion;
         }
         else
         {
@@ -82,7 +82,7 @@ public class TextToSpeechManager : MonoBehaviour
 
     void InitializeSpeechSDK()
     {
-        speechConfig = SpeechConfig.FromSubscription(speechKey, speechRegion);
+        speechConfig = SpeechConfig.FromSubscription(azureSpeechKey, azureSpeechRegion);
         synthesizer = new SpeechSynthesizer(speechConfig, null as AudioConfig);
     }
 
@@ -105,11 +105,12 @@ public class TextToSpeechManager : MonoBehaviour
     }
 
     public async Task SpeakTextAsync(string text)
+
     {
         var result = await synthesizer.SpeakTextAsync(text);
         if (result.Reason == ResultReason.SynthesizingAudioCompleted)
         {
-            WriteSpeakTextLog("Avatar", text);
+            // WriteSpeakTextLog("Avatar", text);
             Debug.Log($"Speech synthesized for text [{text}]");
             var audioClip = CreateAudioClip(result.AudioData);
             if (audioClip != null)
@@ -126,7 +127,7 @@ public class TextToSpeechManager : MonoBehaviour
         }
     }
 
-    private AudioClip CreateAudioClip(byte[] audioData)
+    public AudioClip CreateAudioClip(byte[] audioData)
     {
         if (audioData == null || audioData.Length == 0)
         {
@@ -140,7 +141,7 @@ public class TextToSpeechManager : MonoBehaviour
         return audioClip;
     }
 
-    private float[] ConvertByteToFloatArray(byte[] byteArray)
+    public float[] ConvertByteToFloatArray(byte[] byteArray)
     {
         int length = byteArray.Length / 2;
         float[] floatArray = new float[length];
@@ -153,9 +154,9 @@ public class TextToSpeechManager : MonoBehaviour
     }
 
     [Serializable]
-    private class ConfigData
+    public class ConfigData
     {
-        public string speechKey;
-        public string speechRegion;
+        public string azureSpeechKey;
+        public string azureSpeechRegion;
     }
 }

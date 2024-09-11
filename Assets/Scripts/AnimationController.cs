@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AvatarController : MonoBehaviour
 {
-    private Animator animator;
+    public Animator animator;
 
     // Start is called before the first frame update
     void Start()
