@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # RPM Avatar
 
 This is StellarLink's Avatar Unity project respository, built using ReadyPlayerMe's toolkit.
@@ -62,3 +63,6 @@ No license.
 Kevin Tjia - kevin.a.tjia@stellarlink.co.jp
 
 Project Link: [https://github.com/kevinatjia/stellarlink-avatar](https://github.com/kevinatjia/stellarlink-avatar)
+=======
+# RPAvatar-ved
+>>>>>>> 01ba906e97d17b4bd471650ff14c66ef95dc4f43
